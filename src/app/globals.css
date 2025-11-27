@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --color1: #A7EBF2;
+  --color2: #54ACBF;
+  --color3: #26658C;
+  --primaryFg: #000000;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+    --primaryFg: #ffffff;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Enable proper scrolling */
+html, body {
+  height: auto;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Text visibility rules - CLEANED AND CORRECTED */
+/* Base text color that respects color scheme */
+.text-content {
+  color: var(--foreground);
+}
+
+/* For light backgrounds (like your #1C1835) use white text */
+.dark-background {
+  color: #ffffff;
+}
+
+/* For light backgrounds use dark text */
+.light-background {
+  color: #000000;
+}
+
+/* Specific utility classes */
+.text-white {
+  color: #ffffff !important;
+}
+
+.text-black {
+  color: #000000 !important;
+}
+
+/* Ensure good contrast */
+.contrast-text {
+  color: var(--foreground);
+  background: var(--background);
+}
+
+/* Remove conflicting rules and let Tailwind handle most styling */
