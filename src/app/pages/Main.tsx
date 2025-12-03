@@ -1,7 +1,6 @@
 "use client"
 
 import React from 'react'
-import { FaRocket, FaHeadset } from 'react-icons/fa'
 
 const Hero: React.FC = () => {
   const handleContactClick = () => {
