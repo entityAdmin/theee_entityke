@@ -1,392 +1,221 @@
 "use client";
-import { useState } from "react";
-import Image from "next/image";
+import ProjectCarousel from "@/app/components/ProjectCarousel";
+import BookingForm from "@/app/components/BookingForm";
 
-interface Solution {
+interface Project {
+  id: string;
   title: string;
+  industry: string;
+  users?: string;
   description: string;
-  features: string[];
-  icon: string;
-  problem: string;
-  solution: string;
-  image?: string;
+  impact: string;
+  images: string[];
+  link?: string;
 }
 
-interface Industry {
-  name: string;
-  description: string;
-  tagline: string;
-  solution: string;
-  problem: string;
-  ourSolution: string;
-  image: string;
-  comingSoon?: boolean;
-}
-
-const solutions: Solution[] = [
+const projects: Project[] = [
   {
-    title: "Software Development",
-    description: "Custom applications tailored to your business needs, scalable and secure",
-    features: ["Web Applications", "Mobile Apps", "API Development", "System Integration"],
-    icon: "💻",
-    problem: "Businesses struggle with inefficient manual processes and lack of integrated systems that hinder growth and productivity.",
-    solution: "We build custom software solutions that automate workflows, integrate systems, and provide real-time insights for informed decision-making."
-  },
-  {
-    title: "AI Solutions",
-    description: "From chatbots to predictive analytics – intelligent solutions that give you a competitive edge",
-    features: ["AI Chatbots", "Predictive Analytics", "Machine Learning", "Intelligent Automation"],
-    icon: "🤖",
-    problem: "Organizations miss opportunities by not leveraging data and AI to optimize operations and customer experiences.",
-    solution: "Our AI solutions transform raw data into actionable intelligence, automating complex tasks and providing predictive insights."
-  },
-  {
-    title: "Business Automation",
-    description: "Automating repetitive workflows to save time and reduce operational costs",
-    features: ["Workflow Automation", "Process Optimization", "Cost Reduction", "Efficiency Boost"],
-    icon: "⚡",
-    problem: "Manual, repetitive tasks consume valuable time and resources while increasing error rates.",
-    solution: "We identify automation opportunities and implement solutions that free up your team to focus on strategic initiatives."
-  }
-];
+    id: "mavuno-insight",
+    title: "Mavuno Insight",
+    industry: "Agriculture / Agritech",
+          description:
+            "Combines real-time market intelligence, crop-price trends, and a marketplace connecting farmers directly with verified buyers.",
+          impact:
+            "Informed planting decisions, fair selling prices, predictable income",
+          images: [
+            "https://nowqwttrqtklrxgjgxid.supabase.co/storage/v1/object/public/folder/photo/Mavuno%20Landing%20UI.png",
+            "https://nowqwttrqtklrxgjgxid.supabase.co/storage/v1/object/public/folder/photo/Mavuno%20UI.png"
+          ],
+          link: "https://mavuno-turudi-mashambani.vercel.app/"
+        },
+        {
+          id: "mavuno-marine",
+          title: "Mavuno Insight Marine",
+          industry: "Fisheries / Marine Market",
+          users: "Coastal fishers & buyers",
+          description:
+            "Web + SMS platform connecting fishers directly to buyers, with real-time seafood price data and secure payments.",
+          impact: "Fair earnings, reliable buyer access, reduced exploitation",
+          images: [
+            "https://nowqwttrqtklrxgjgxid.supabase.co/storage/v1/object/public/folder/photo/Mavuno%20Marine%20UI.png"
+          ],
+          link: "https://mavuno-insight-marine.vercel.app/"
+        },
+        {
+          id: "quickprinting",
+          title: "QuickPrinting",
+          industry: "ICT / Print-shop services",
+          users: "~50+ cyber/print shops",
+          description:
+            "Digital workflow allowing customers to upload documents via QR/link, with operator dashboard and AI tools.",
+          impact: "Faster turnaround, reduced errors, professional experience",
+          images: [
+            "https://nowqwttrqtklrxgjgxid.supabase.co/storage/v1/object/public/folder/photo/QuickPrinting%20UI.png"
+          ]
+        },
+        {
+          id: "stockflow",
+          title: "StockFlow",
+          industry: "Retail / Small Business",
+          users: "20–100 small shops in pilot regions",
+          description:
+            "Mobile-friendly inventory & sales platform with real-time stock tracking and sales analytics.",
+          impact: "Smarter restocking, reduced losses, better profitability",
+          images: [
+            "https://nowqwttrqtklrxgjgxid.supabase.co/storage/v1/object/public/folder/photo/StockFlow%20Landing%20UI.png",
+            "https://nowqwttrqtklrxgjgxid.supabase.co/storage/v1/object/public/folder/photo/StockFlow%20Dashboard%20UI.png",
+            "https://nowqwttrqtklrxgjgxid.supabase.co/storage/v1/object/public/folder/photo/StockFlow%20UI.png"
+          ]
+        },
+        {
+          id: "mamacare",
+          title: "MamaCare",
+          industry: "Health / Public Service",
+          users: "~1,000+ households (pilot)",
+          description:
+            "Household registration & maternal/child health tracking with automated reminders and reports.",
+          impact: "Better health outcomes, timely interventions, organized data",
+          images: [
+            "https://nowqwttrqtklrxgjgxid.supabase.co/storage/v1/object/public/folder/photo/Mama%20Care%20UI.png",
+            "https://nowqwttrqtklrxgjgxid.supabase.co/storage/v1/object/public/folder/photo/Mamacare%20UI.png"
+          ]
+        },
+        {
+          id: "codegenie",
+          title: "CodeGenie AI Plugin",
+          industry: "Software Development / AI Tools",
+          users: "40+ active VS Code installs",
+          description:
+            "VS Code plugin that generates code, scaffolding and provides in-editor guidance to speed development.",
+          impact: "Faster development, higher productivity",
+          images: [
+            "https://nowqwttrqtklrxgjgxid.supabase.co/storage/v1/object/public/folder/photo/CodeGenie%20Landing%20UI.png",
+            "https://nowqwttrqtklrxgjgxid.supabase.co/storage/v1/object/public/folder/photo/Codegenie%20UI.png"
+          ]
+        },
+        {
+          id: "iphone-store",
+          title: "iPhone Store — Ecommerce Platform",
+          industry: "Retail / Online Store",
+          users: "Small electronics retailers",
+          description:
+            "Full ecommerce platform with product browsing, filtering, cart and checkout for shops.",
+          impact: "Smooth shopping experience, increased sales",
+          images: [
+            "https://nowqwttrqtklrxgjgxid.supabase.co/storage/v1/object/public/folder/photo/Iphone%20Store%20UI.png"
+          ],
+          link: "https://shopping-website-inky-seven.vercel.app/"
+        }
+      ];
 
-const industries: Industry[] = [
-  {
-    name: "Agriculture",
-    description: "Empowering farmers with data-driven insights for better yields",
-    tagline: "Grow what counts. Harvest prosperity.",
-    solution: "Mavuno Insights",
-    problem: "Farmers lack access to real-time data for optimal planting, harvesting, and resource allocation decisions.",
-    ourSolution: "Mavuno Insights uses satellite data, weather patterns, and soil analysis to provide actionable agricultural intelligence.",
-    image: "https://nowqwttrqtklrxgjgxid.supabase.co/storage/v1/object/public/folder/photos/maize.jpg"
-  },
-  {
-    name: "Retail",
-    description: "Transform your retail operations with intelligent solutions",
-    tagline: "Sell smarter. Grow faster.",
-    solution: "Mavuno Retail",
-    problem: "Retailers struggle with inventory management, customer insights, and personalized marketing at scale.",
-    ourSolution: "Mavuno Retail provides real-time inventory tracking, customer behavior analytics, and AI-powered recommendations.",
-    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=500&h=300&fit=crop",
-    comingSoon: true
-  },
-  {
-    name: "Education",
-    description: "Revolutionize learning institutions with cutting-edge technology",
-    tagline: "Educate efficiently. Inspire innovation.",
-    solution: "Mavuno Edu",
-    problem: "Educational institutions face challenges in student engagement, administrative efficiency, and personalized learning.",
-    ourSolution: "Mavuno Edu creates digital learning environments that enhance student engagement and streamline administrative processes.",
-    image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=500&h=300&fit=crop",
-    comingSoon: true
-  },
-  {
-    name: "Healthcare",
-    description: "Enhance patient care and optimize medical operations",
-    tagline: "Care better. Heal faster.",
-    solution: "Mavuno Health",
-    problem: "Healthcare providers need better tools for patient management, data security, and operational efficiency.",
-    ourSolution: "Mavuno Health improves patient care coordination while ensuring data security and regulatory compliance.",
-    image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=500&h=300&fit=crop",
-    comingSoon: true
-  }
-];
+      export default function Solutions() {
+        // Scroll helper for booking button
+        const scrollToBooking = () => {
+          const el = document.getElementById('booking-form');
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        };
 
-export default function Solutions() {
-  const [selectedIndustry, setSelectedIndustry] = useState<Industry>(industries[0]);
-  const [selectedSolution, setSelectedSolution] = useState<Solution | null>(null);
-
-  return (
-    <section className="min-h-screen w-full py-20 px-4 relative overflow-hidden" id="solutions">
-      {/* Background Elements */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-1/4 -left-10 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-1/4 -right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px]"></div>
-      </div>
-
-      <div className="max-w-6xl mx-auto w-full">
-        
-        {/* Header */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white">
-            Our Solutions
-          </h1>
-          <div className="flex items-center justify-center mb-8">
-            <div className="w-20 h-px bg-blue-400"></div>
-            <div className="mx-4 flex gap-2">
-              <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-              <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-              <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-            </div>
-            <div className="w-20 h-px bg-blue-400"></div>
-          </div>
-          <p className="text-lg text-white/80 max-w-2xl mx-auto leading-relaxed">
-            We believe in identifying real problems and creating practical solutions that drive meaningful impact for your business.
-          </p>
-        </div>
-
-        {/* Who We Are Section */}
-        <div className="border border-blue-400/30 rounded-3xl p-8 mb-16 backdrop-blur-lg bg-white/5">
-          <div className="text-center max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-white mb-6">Who We Are</h2>
-            <p className="text-white text-lg leading-relaxed mb-6">
-              Thee Entity is a Kenyan-born tech startup dedicated to building unique AI-powered solutions and software that help businesses grow.
-            </p>
-            <p className="text-white/80 leading-relaxed mb-8">
-              Our mission is to bridge the automation gap for SMEs and institutions by offering tools that boost efficiency, cut costs, and open new opportunities.
-            </p>
-            
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {[
-                "AI-Powered Innovation",
-                "Customer-Centric Approach", 
-                "Scalable Solutions",
-                "Continuous Support",
-                "Cost-Effective Technology",
-                "Local Expertise, Global Standards"
-              ].map((item, index) => (
-                <div key={index} className="text-center p-4 rounded-xl bg-white/5 border border-blue-400/20 hover:border-blue-400/40 transition-all duration-300">
-                  <div className="text-white text-sm font-medium leading-tight">{item}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Solutions Grid */}
-        <div className="grid md:grid-cols-3 gap-6 mb-20">
-          {solutions.map((solution, index) => (
-            <div 
-              key={index}
-              className="border border-blue-400/30 rounded-2xl p-6 backdrop-blur-lg bg-white/5 hover:bg-white/10 transition-all duration-500 hover:scale-105 cursor-pointer group"
-              onClick={() => setSelectedSolution(solution)}
-            >
-              <div className="text-3xl mb-4 group-hover:scale-110 transition-transform duration-300">
-                {solution.icon}
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3 group-hover:text-blue-300 transition-colors">
-                {solution.title}
-              </h3>
-              <p className="text-white/70 text-sm mb-4 leading-relaxed">
-                {solution.description}
-              </p>
-              <div className="space-y-2 mb-4">
-                {solution.features.map((feature, featureIndex) => (
-                  <div key={featureIndex} className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 bg-blue-400 rounded-full"></div>
-                    <span className="text-white/80 text-xs font-medium">{feature}</span>
-                  </div>
-                ))}
-              </div>
-              <button className="text-blue-300 text-sm font-semibold hover:text-blue-200 transition-colors inline-flex items-center gap-1">
-                Learn more <span>→</span>
-              </button>
-            </div>
-          ))}
-        </div>
-
-        {/* Industries Section */}
-        <div className="border border-blue-400/30 rounded-3xl p-8 backdrop-blur-lg bg-white/5">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-4">
-              Industry-Specific Solutions
-            </h2>
-            <p className="text-white/80 text-lg">
-              We understand that every industry has unique challenges. Here&apos;s how we&apos;re making a difference.
-            </p>
-          </div>
-
-          <div className="grid lg:grid-cols-2 gap-8">
-            {/* Industry Selector */}
-            <div className="space-y-4">
-              {industries.map((industry, index) => (
-                <button
-                  key={index}
-                  onClick={() => setSelectedIndustry(industry)}
-                  className={`w-full text-left p-5 rounded-xl border transition-all duration-300 relative ${
-                    selectedIndustry.name === industry.name
-                      ? "border-blue-400 bg-blue-400/10 shadow-lg shadow-blue-400/20"
-                      : "border-white/20 hover:border-blue-400/40 hover:bg-blue-400/5"
-                  }`}
-                >
-                  {industry.comingSoon && (
-                    <div className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full font-bold">
-                      SOON
-                    </div>
-                  )}
-                  <h3 className="text-lg font-bold text-white mb-2">
-                    {industry.name}
-                  </h3>
-                  <p className="text-white/70 text-sm">
-                    {industry.description}
-                  </p>
-                </button>
-              ))}
+        return (
+          <section className="w-full py-20 px-4 relative overflow-hidden" id="solutions">
+            <div className="absolute inset-0 -z-10">
+              <div className="absolute top-1/4 -left-10 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl"></div>
+              <div className="absolute bottom-1/4 -right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
+              <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px]"></div>
             </div>
 
-            {/* Industry Details */}
-            <div className="border border-blue-400/30 rounded-2xl p-6 bg-white/5">
-              <div className="mb-6">
-                {selectedIndustry.comingSoon ? (
-                  <div className="w-full h-48 bg-gradient-to-br from-blue-500/20 to-blue-600/30 rounded-xl mb-4 border border-blue-400/30 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="text-6xl mb-4">🚀</div>
-                      <h3 className="text-2xl font-bold text-white mb-2">Banger Project Coming!</h3>
-                      <p className="text-blue-300 text-lg">Give us about a week</p>
-                    </div>
-                  </div>
-                ) : (
-                  <Image 
-                    src={selectedIndustry.image} 
-                    alt={selectedIndustry.name}
-                    width={500}
-                    height={300}
-                    className="w-full h-48 object-cover rounded-xl mb-4 border border-blue-400/20"
-                  />
-                )}
-                <h3 className="text-2xl font-bold text-white mb-2 text-center">
-                  {selectedIndustry.name}
-                </h3>
-                <p className="text-blue-300 text-lg italic text-center mb-4">
-                  {selectedIndustry.tagline}
+            <div className="max-w-7xl mx-auto w-full">
+              <div className="text-center mb-12">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white">
+                  Industry-Specific Solutions
+                </h1>
+                <p className="text-lg text-white/80 max-w-2xl mx-auto leading-relaxed">
+                  Practical, field-proven projects built for local industries — designed to deliver measurable impact.
                 </p>
               </div>
-              
-              <div className="space-y-4">
-                <div className="bg-white/5 rounded-xl p-4 border border-blue-400/20">
-                  <h4 className="text-blue-300 font-bold mb-2 text-sm uppercase tracking-wider">The Problem</h4>
-                  <p className="text-white/80 text-sm leading-relaxed">
-                    {selectedIndustry.problem}
-                  </p>
-                </div>
-                
-                <div className="bg-white/5 rounded-xl p-4 border border-blue-400/20">
-                  <h4 className="text-blue-300 font-bold mb-2 text-sm uppercase tracking-wider">Our Solution</h4>
-                  <p className="text-white/80 text-sm leading-relaxed">
-                    {selectedIndustry.ourSolution}
-                  </p>
-                </div>
-                
-                <div className="text-center pt-4">
-                  <div className="inline-block bg-blue-400/10 border border-blue-400/30 rounded-lg px-4 py-2 mb-4">
-                    <span className="text-blue-300 font-semibold">
-                      {selectedIndustry.solution}
-                    </span>
-                  </div>
-                  {selectedIndustry.comingSoon ? (
-                    <button className="w-full bg-blue-500/20 text-blue-300 font-bold py-3 rounded-xl border border-blue-400/30 cursor-not-allowed opacity-70">
-                      Coming Soon - Stay Tuned!
-                    </button>
-                  ) : (
-                    <button className="w-full bg-white text-black font-bold py-3 rounded-xl hover:scale-105 transition-transform duration-300 border border-white hover:border-blue-400">
-                      Learn More About {selectedIndustry.solution}
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        {/* CTA Section */}
-        <div className="text-center mt-16">
-          <div className="border border-blue-400/30 rounded-3xl p-8 backdrop-blur-lg bg-white/5">
-            <h2 className="text-3xl font-bold text-white mb-4">
-              Ready to solve your business challenges?
-            </h2>
-            <p className="text-white/80 text-lg mb-6 max-w-2xl mx-auto">
-              Let&apos;s identify your specific problems and build the perfect solution together.
-            </p>
-            <button className="bg-white text-black font-bold py-3 px-8 rounded-xl hover:scale-105 transition-transform duration-300 border border-white hover:border-blue-400">
-              Start Your Transformation
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Solution Detail Modal */}
-      {selectedSolution && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-lg">
-          <div className="border border-blue-400/30 rounded-3xl p-6 backdrop-blur-xl bg-gray-900/95 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-start mb-6">
-              <div className="flex items-center gap-4">
-                <div className="text-4xl">
-                  {selectedSolution.icon}
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-white">{selectedSolution.title}</h3>
-                  <p className="text-white/70">{selectedSolution.description}</p>
-                </div>
-              </div>
-              <button 
-                onClick={() => setSelectedSolution(null)}
-                className="text-white/60 hover:text-white text-2xl transition-colors"
-              >
-                ×
-              </button>
-            </div>
-            
-            <div className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-white/5 rounded-xl p-4 border border-blue-400/20">
-                  <h4 className="text-blue-300 font-bold mb-3 text-sm uppercase tracking-wider">The Challenge</h4>
-                  <p className="text-white/80 text-sm leading-relaxed">
-                    {selectedSolution.problem}
-                  </p>
-                </div>
-                
-                <div className="bg-white/5 rounded-xl p-4 border border-blue-400/20">
-                  <h4 className="text-blue-300 font-bold mb-3 text-sm uppercase tracking-wider">Our Approach</h4>
-                  <p className="text-white/80 text-sm leading-relaxed">
-                    {selectedSolution.solution}
-                  </p>
-                </div>
-              </div>
-              
-              <div className="bg-white/5 rounded-xl p-4 border border-blue-400/20">
-                <h4 className="text-blue-300 font-bold mb-3 text-sm uppercase tracking-wider">Key Features</h4>
-                <div className="grid gap-2">
-                  {selectedSolution.features.map((feature, index) => (
-                    <div key={index} className="flex items-center gap-3">
-                      <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                      <span className="text-white text-sm">{feature}</span>
+              <div className="grid gap-8">
+                {projects.map((p) => (
+                  <article
+                    key={p.id}
+                    className="grid lg:grid-cols-3 gap-6 items-start bg-white/5 border border-white/10 rounded-2xl p-6 transition-transform hover:scale-[1.01] hover:shadow-2xl"
+                    aria-labelledby={`${p.id}-title`}
+                  >
+                    <div className="lg:col-span-1">
+                      <div className="rounded-xl overflow-hidden border border-white/5">
+                        <ProjectCarousel images={p.images} alt={p.title} />
+                      </div>
                     </div>
-                  ))}
+
+                    <div className="lg:col-span-2">
+                      <h3 id={`${p.id}-title`} className="text-2xl font-semibold text-white mb-2">
+                        {p.title}
+                      </h3>
+                      <div className="text-sm text-white/60 mb-3">{p.industry} • {p.users ?? "—"}</div>
+                      <p className="text-white/90 mb-4">{p.description}</p>
+
+                      <div className="mb-4">
+                        <h4 className="text-sm text-purple-300 font-semibold mb-1">Key impact / value</h4>
+                        <p className="text-white/80">{p.impact}</p>
+                      </div>
+
+                      <div className="flex flex-wrap items-center gap-3 mt-4">
+                        {p.link && (
+                          <a
+                            href={p.link}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold shadow-md hover:scale-105 transition-transform"
+                          >
+                            Learn More
+                          </a>
+                        )}
+
+                        <button
+                          onClick={scrollToBooking}
+                          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-white/20 text-white/90 hover:bg-white/5 transition-all"
+                        >
+                          Book Discovery Call
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+
+              {/* Booking area and final CTA */}
+              <div className="mt-12 grid lg:grid-cols-2 gap-8 items-start">
+                <div id="booking-form" className="bg-white/5 border border-white/10 rounded-2xl p-6">
+                  <h3 className="text-2xl text-white font-semibold mb-3">Book a Discovery Call</h3>
+                  <p className="text-white/80 mb-4">
+                    Speak with our product team — we will review your needs and map out a tailored solution.
+                  </p>
+                  <div className="flex items-center gap-3 mb-4">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" className="text-white">
+                      <path d="M7 10h5v5H7z" fill="currentColor" opacity="0.08" />
+                      <path d="M7 3v2M17 3v2M4 11h16M5 21h14a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    <div>
+                      <div className="text-white font-semibold">Quick, Flexible Scheduling</div>
+                      <div className="text-white/70 text-sm">Pick a time that works for you — we will handle the rest.</div>
+                    </div>
+                  </div>
+                  <div>
+                    <BookingForm />
+                  </div>
+                </div>
+
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-col justify-center">
+                  <h3 className="text-2xl text-white font-semibold mb-3">Why work with Thee Entity?</h3>
+                  <ul className="space-y-3 text-white/80">
+                    <li>• Field-proven projects tailored for local industries.</li>
+                    <li>• Data-driven solutions with measurable impact.</li>
+                    <li>• Rapid prototyping and practical deployment.</li>
+                  </ul>
+
+                  <p className="mt-6 text-white/80">We also build custom tools, AI automations, and AI agents tailored to your business — whatever your workflow, we can make it smarter and easier.</p>
                 </div>
               </div>
-              
-              <div className="flex gap-3 pt-4">
-                <button className="bg-white text-black font-bold px-6 py-3 rounded-xl hover:scale-105 transition-transform duration-300 flex-1 border border-white hover:border-blue-400">
-                  Get This Solution
-                </button>
-                <button 
-                  onClick={() => setSelectedSolution(null)}
-                  className="bg-white/10 text-white px-6 py-3 rounded-xl font-semibold hover:bg-white/20 transition-all duration-300 flex-1 border border-white/20 hover:border-blue-400/40"
-                >
-                  Close
-                </button>
-              </div>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* Floating particles */}
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 bg-blue-400 rounded-full opacity-40 animate-float"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${8 + Math.random() * 8}s`
-            }}
-          />
-        ))}
-      </div>
-    </section>
-  );
-}
+          </section>
+        );
+      }

@@ -78,7 +78,7 @@ const Footer: React.FC = () => {
                   <FaEnvelope className="text-white text-xs" />
                 </div>
                 <div>
-                  <p className="text-white text-sm">info@theeentity.co.ke</p>
+                  <p className="text-white text-sm">info@theeentityke.com</p>
                 </div>
               </li>
               <li className="flex items-center gap-2">

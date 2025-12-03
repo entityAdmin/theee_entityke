@@ -17,28 +17,41 @@ const LoadingScreen = () => {
   if (!isLoading) return null;
 
   return (
-    <div className="fixed inset-0 z-50">
-      <DynamicBackground />
+    <div className="fixed inset-0 z-50 bg-slate-900">
       <div className="relative z-10 flex items-center justify-center w-full h-full">
-        {/* SVG Gradient Spinner */}
-        <div className="flex justify-center items-center">
-          <svg className="w-20 h-20 animate-spin" viewBox="0 0 100 100">
+        {/* Animated Spinner - Matching Your Design */}
+        <div className="relative w-24 h-24">
+          {/* Outer circle - white stroke */}
+          <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
+            <circle
+              cx="50"
+              cy="50"
+              r="45"
+              stroke="rgba(255, 255, 255, 0.2)"
+              strokeWidth="4"
+              fill="none"
+              strokeLinecap="round"
+            />
+          </svg>
+
+          {/* Inner rotating circle - blue gradient stroke with animation */}
+          <svg className="absolute inset-0 w-full h-full animate-spin" viewBox="0 0 100 100" style={{ animationDuration: '2s' }}>
             <defs>
-              <linearGradient id="blueWhiteGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#0962f1ff" />
-                <stop offset="50%" stopColor="#93c5fd" />
-                <stop offset="100%" stopColor="#ffffff" />
+              <linearGradient id="spinnerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="rgba(255, 255, 255, 0)" />
+                <stop offset="100%" stopColor="rgba(59, 130, 246, 1)" />
               </linearGradient>
             </defs>
             <circle
               cx="50"
               cy="50"
               r="45"
-              stroke="url(#blueWhiteGradient)"
-              strokeWidth="8"
+              stroke="url(#spinnerGradient)"
+              strokeWidth="4"
               fill="none"
               strokeLinecap="round"
-              strokeDasharray="100 200"
+              strokeDasharray="70 200"
+              strokeDashoffset="0"
             />
           </svg>
         </div>

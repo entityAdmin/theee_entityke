@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import TeamSection from "@/app/components/TeamSection";
 
 interface TeamMember {
   name: string;
@@ -180,47 +181,8 @@ const About: React.FC = () => {
           </div>
         </div>
 
-        {/* Team Section */}
-        <div className="border border-purple-400/30 rounded-3xl p-6 backdrop-blur-lg bg-white/5">
-          <h3 className="text-3xl font-bold text-white mb-8 text-center">Meet Our Founders</h3>
-          <p className="text-white/70 text-center mb-8 max-w-xl mx-auto leading-relaxed">
-            The driving force behind our innovation and strategy.
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            {team.map((member, index) => (
-              <div 
-                key={index}
-                className="text-center cursor-pointer group"
-                onClick={() => setSelectedMember(member)}
-              >
-                <div className="relative mb-4 mx-auto w-24 h-24 rounded-2xl overflow-hidden border-2 border-purple-400/30 group-hover:border-purple-400 transition-all duration-500 group-hover:scale-110">
-                  <Image 
-                    src={member.image} 
-                    alt={member.name}
-                    width={96}
-                    height={96}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </div>
-                <h4 className="text-white font-semibold text-sm mb-1">{member.name}</h4>
-                <p className="text-purple-300 text-xs mb-2">{member.role.split(',')[0]}</p>
-                <button className="text-white/60 text-xs hover:text-white transition-colors">
-                  View Profile
-                </button>
-              </div>
-            ))}
-          </div>
-          
-          <div className="text-center">
-            <Link href="/team" legacyBehavior>
-              <a className="bg-purple-500 text-white px-8 py-3 rounded-xl font-semibold hover:bg-purple-600 transition-all duration-300">
-                Meet The Entire Team
-              </a>
-            </Link>
-          </div>
-        </div>
+        {/* Team Section (refactored) */}
+        <TeamSection />
       </div>
 
       {/* Team Member Modal */}

@@ -70,7 +70,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <p className="text-white font-semibold">Email</p>
-                    <p className="text-purple-300 text-lg">info@theeentity.co.ke</p>
+                    <p className="text-purple-300 text-lg">info@theeentityke.com</p>
                   </div>
                 </div>
 
@@ -151,7 +151,7 @@ export default function Contact() {
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
-                      placeholder="info@theeentity.co.ke"
+                      placeholder="info@theeentityke.com"
                       className="w-full px-4 py-4 bg-white/10 border border-blue-400/20 rounded-2xl text-white placeholder-white/50 focus:outline-none focus:border-blue-400/40 focus:bg-white/15 transition-all duration-300"
                       required
                     />

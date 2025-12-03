@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 interface TeamMember {
   name: string
@@ -80,7 +81,18 @@ export default function Team() {
       className="min-h-screen w-full py-20 px-4 relative overflow-hidden"
     >
       <div className="max-w-6xl mx-auto w-full relative z-10">
-        <div className="text-center mb-16">
+        {/* Back Button */}
+        <div className="mb-8">
+          <Link
+            href="/#team"
+            className="inline-flex items-center gap-2 text-purple-300 hover:text-purple-200 transition-colors text-sm font-medium"
+          >
+            <span>←</span> Back to Home
+          </Link>
+        </div>
+
+        {/* Header Section */}
+        <div className="text-center mb-20">
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white">
             Meet The Team
           </h2>
