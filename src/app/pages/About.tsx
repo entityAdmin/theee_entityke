@@ -1,12 +1,12 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 interface TeamMember {
   name: string;
   role: string;
   description: string;
-  quote: string;
   image: string;
   portfolio: string;
   portfolioTarget?: string;
@@ -21,64 +21,43 @@ interface Service {
 const team: TeamMember[] = [
   {
     name: "Collins Kipkirui Lagat",
-    role: "Co-founder",
-    description: "Collins is the driving force and leader of Thee Entity. A visionary idealist with a strong background in backend development and DevOps, he brings both technical expertise and strategic leadership to the team. As a co-founder, he is passionate about creating practical, scalable solutions that bridge the gap between technology and real business needs, empowering enterprises to become globally competitive.",
-    quote: "I believe that innovation should be accessible to everyone, not just large enterprises. Our mission at Thee Entity is to level the playing field.",
+    role: "Co-Founder, CEO, Lead Strategist",
+    description: "Founder and head of direction at Thee Entity. Drives vision, strategy and execution across all products and services. Mobile developer, DevOps engineer, and the backbone of the technical and operational ecosystem.",
     image: "https://nowqwttrqtklrxgjgxid.supabase.co/storage/v1/object/public/folder/photos/Collins.jpeg",
-    portfolio: "#"
+    portfolio: "https://collinslagat1901.github.io/Collins-Lagat/"
   },
   {
     name: "Fatime Hashim Machira",
     role: "Co-Founder",
-    description: "As a frontend developer and UI/UX designer, Fatime is the creative force behind Thee Entity's user interfaces, ensuring they are not only beautiful but also intuitive and user-friendly. With her added passion for cybersecurity, she helps architect systems that are both engaging and secure. Her vision is to create digital experiences that don't just work, but delight and protect the users who depend on them.",
-    quote: "I believe in building technology that is both beautiful and secure. We are not just solving problems — we are designing trustworthy digital experiences.",
+    description: "Co-founder contributing to the foundational structure, organization and evolution of the company. Provides stability, insight and long-term continuity.",
     image: "https://nowqwttrqtklrxgjgxid.supabase.co/storage/v1/object/public/folder/photos/Fatime.jpg",
     portfolio: "#"
   },
   {
     name: "Brian Kareithi",
     role: "Co-Founder",
-    description: "Brian combines his expertise in cybersecurity and backend engineering with a strategic mindset, ensuring that Thee Entity's solutions are not only secure but also market-ready. His deep understanding of digital threats helps build systems that are both safe and resilient. As a communicator, he bridges the gap between our technology and the businesses we serve, helping organizations understand how AI and automation can transform their operations.",
-    quote: "In a digital-first world, trust is everything. My goal is to make Thee Entity a brand that businesses can rely on for both security and growth.",
+    description: "Part of the original founding trio, supporting core decisions, identity formation and business direction.",
     image: "https://nowqwttrqtklrxgjgxid.supabase.co/storage/v1/object/public/folder/photos/kareithi.jpg",
-    portfolio: "https://kareithi.vercel.app",
+    portfolio: "https://kareithi.vercel.app/",
     portfolioTarget: "_blank"
-  },
-  {
-    name: "Zeituna Hussein Kura",
-    role: "Marketing & Social Media Manager",
-    description: "Zeituna leads the charge in telling Thee Entity's story to the world. As the manager of marketing and all social media platforms, she crafts compelling narratives that connect with our audience and showcase the transformative power of our solutions. Her strategic approach ensures that our message reaches the right people, building a strong community around our brand.",
-    quote: "Great technology deserves a great story. My mission is to share how Thee Entity is changing the game, one business at a time.",
-    image: "https://nowqwttrqtklrxgjgxid.supabase.co/storage/v1/object/public/folder/photos/Zeituna.jpg",
-    portfolio: "#"
   }
 ];
 
 const services: Service[] = [
   {
     title: "Software Development",
-    description: "Custom software solutions tailored to your business needs",
-    details: "We build scalable, robust applications using modern technologies and best practices to drive your business forward."
+    description: "Custom applications tailored to your business needs, scalable and secure",
+    details: "We build custom software solutions that automate workflows, integrate systems, and provide real-time insights for informed decision-making."
   },
   {
-    title: "AI Agents Development",
-    description: "Intelligent automation for enhanced productivity",
-    details: "Create smart AI assistants that automate repetitive tasks, provide insights, and enhance customer experiences."
+    title: "AI Solutions",
+    description: "From chatbots to predictive analytics – intelligent solutions that give you a competitive edge",
+    details: "Our AI solutions transform raw data into actionable intelligence, automating complex tasks and providing predictive insights."
   },
   {
-    title: "Infrastructure Security",
-    description: "Protecting your digital assets 24/7",
-    details: "Comprehensive security solutions including threat monitoring, vulnerability assessment, and infrastructure hardening."
-  },
-  {
-    title: "Mobile Applications",
-    description: "Native and cross-platform mobile solutions",
-    details: "Engaging mobile experiences for iOS and Android that connect you with your customers anywhere, anytime."
-  },
-  {
-    title: "24/7 Support",
-    description: "Round-the-clock system monitoring and maintenance",
-    details: "Proactive monitoring, rapid response to outages, and continuous optimization to keep your systems running smoothly."
+    title: "Business Automation",
+    description: "Automating repetitive workflows to save time and reduce operational costs",
+    details: "We identify automation opportunities and implement solutions that free up your team to focus on strategic initiatives."
   }
 ];
 
@@ -203,19 +182,19 @@ const About: React.FC = () => {
 
         {/* Team Section */}
         <div className="border border-purple-400/30 rounded-3xl p-6 backdrop-blur-lg bg-white/5">
-          <h3 className="text-3xl font-bold text-white mb-8 text-center">Meet Our Team</h3>
+          <h3 className="text-3xl font-bold text-white mb-8 text-center">Meet Our Founders</h3>
           <p className="text-white/70 text-center mb-8 max-w-xl mx-auto leading-relaxed">
-            Passionate innovators driving the future of business automation
+            The driving force behind our innovation and strategy.
           </p>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
             {team.map((member, index) => (
               <div 
                 key={index}
                 className="text-center cursor-pointer group"
                 onClick={() => setSelectedMember(member)}
               >
-                <div className="relative mb-4 mx-auto w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden border-2 border-purple-400/30 group-hover:border-purple-400 transition-all duration-500 group-hover:scale-110">
+                <div className="relative mb-4 mx-auto w-24 h-24 rounded-2xl overflow-hidden border-2 border-purple-400/30 group-hover:border-purple-400 transition-all duration-500 group-hover:scale-110">
                   <Image 
                     src={member.image} 
                     alt={member.name}
@@ -225,13 +204,21 @@ const About: React.FC = () => {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
-                <h4 className="text-white font-semibold text-sm mb-1">{member.name.split(' ')[0]}</h4>
-                <p className="text-purple-300 text-xs mb-2">{member.role.split('|')[0].trim()}</p>
+                <h4 className="text-white font-semibold text-sm mb-1">{member.name}</h4>
+                <p className="text-purple-300 text-xs mb-2">{member.role.split(',')[0]}</p>
                 <button className="text-white/60 text-xs hover:text-white transition-colors">
                   View Profile
                 </button>
               </div>
             ))}
+          </div>
+          
+          <div className="text-center">
+            <Link href="/team" legacyBehavior>
+              <a className="bg-purple-500 text-white px-8 py-3 rounded-xl font-semibold hover:bg-purple-600 transition-all duration-300">
+                Meet The Entire Team
+              </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -268,16 +255,11 @@ const About: React.FC = () => {
                 <p className="text-white/80 leading-relaxed">{selectedMember.description}</p>
               </div>
               
-              <div className="border-t border-white/20 pt-4">
-                <h4 className="text-white font-semibold mb-2">Quote</h4>
-                <p className="text-white/80 italic">&ldquo;{selectedMember.quote}&rdquo;</p>
-              </div>
-              
               <div className="flex gap-3 pt-4">
                 <a 
-                  href={selectedMember.portfolio.startsWith('http') ? selectedMember.portfolio : `https://${selectedMember.portfolio}`}
+                  href={selectedMember.portfolio}
                   target={selectedMember.portfolioTarget || '_self'}
-                  className="bg-purple-500 text-white px-4 py-2 rounded-xl font-semibold hover:bg-purple-600 transition-all duration-300"
+                  className={`bg-purple-500 text-white px-4 py-2 rounded-xl font-semibold hover:bg-purple-600 transition-all duration-300 ${selectedMember.portfolio === '#' ? 'hidden' : ''}`}
                 >
                   View Portfolio
                 </a>
