@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef, useState } from "react";
+import type { EmailJSResponseStatus } from "@emailjs/browser";
 import { FaCalendarAlt } from "react-icons/fa";
 import emailjs from "@emailjs/browser";
 
@@ -14,13 +15,12 @@ export default function BookingForm() {
   const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || "aKvvj5-jhk8txeQul";
 
   // initialize once (idempotent)
-  if (publicKey && typeof window !== "undefined" && (emailjs as any).init instanceof Function) {
+  if (publicKey && typeof window !== "undefined" && typeof emailjs.init === "function") {
     try {
       // Safe to call repeatedly - EmailJS ignores duplicate inits
       emailjs.init(publicKey);
     } catch (initErr) {
       // nonfatal: continue, sendForm will accept publicKey as 4th arg if needed
-      // eslint-disable-next-line no-console
       console.warn("EmailJS init failed:", initErr);
     }
   }
@@ -52,20 +52,35 @@ export default function BookingForm() {
     const replyField = formRef.current.querySelector('input[name="reply_to"]') as HTMLInputElement | null;
     if (replyField) replyField.value = emailEl?.value || "";
 
-    try {
+      try {
       // Use sendForm. Since we called init(publicKey) above, we can omit the 4th arg.
       // But to be safe if init failed, pass publicKey as 4th param.
-      const sendPromise = (emailjs as any).sendForm
-        ? (emailjs as any).sendForm(serviceId, templateId, formRef.current, publicKey)
+      const sendPromise = typeof emailjs.sendForm === 'function'
+        ? emailjs.sendForm(serviceId, templateId, formRef.current, publicKey)
         : Promise.reject(new Error("EmailJS client not available"));
 
-      await sendPromise;
+      const res = (await sendPromise) as EmailJSResponseStatus;
+      // Log response for debugging
+      console.log("EmailJS send result (booking):", res);
 
-      setMessage("Thanks — request received. We will email to confirm shortly.");
-      formRef.current.reset();
+      // Some providers return a status; require 200 for success
+      const debug = !!process.env.NEXT_PUBLIC_EMAILJS_DEBUG;
+      const status = res?.status;
+      const text = res?.text;
+
+      if (typeof status !== 'number' || status !== 200) {
+        console.error('EmailJS reported non-200 response (booking):', res);
+        const details = text || JSON.stringify(res);
+        setMessage(`Failed to send. (${details})`);
+        if (debug) {
+            console.debug('EmailJS raw response (booking):', res);
+          }
+      } else {
+        setMessage("Thanks — request received. We will email to confirm shortly.");
+        formRef.current.reset();
+      }
     } catch (err) {
       // Log server-side as well (recommended)
-      // eslint-disable-next-line no-console
       console.error("EmailJS error (booking):", err);
       setMessage("Failed to send. Please try again or email us directly at info@theeentityke.com.");
     } finally {
