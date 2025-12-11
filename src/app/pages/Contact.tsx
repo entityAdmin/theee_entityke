@@ -1,25 +1,74 @@
 "use client";
-import { useState } from "react";
+
+import React, { useRef, useState } from "react";
 import { FaEnvelope, FaPhone, FaCalendarAlt, FaPaperPlane, FaMapMarkerAlt } from "react-icons/fa";
+import emailjs from "@emailjs/browser";
 
 export default function Contact() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: ""
-  });
+  const formRef = useRef<HTMLFormElement | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log("Form submitted:", formData);
-  };
+    setStatus(null);
+    setLoading(true);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    try {
+      // Append date and reply_to before sending
+      if (formRef.current) {
+        const dateField = formRef.current.querySelector('input[name="date"]') as HTMLInputElement | null;
+        if (dateField) dateField.value = new Date().toLocaleString();
+        const replyField = formRef.current.querySelector('input[name="reply_to"]') as HTMLInputElement | null;
+        if (replyField) {
+          const emailEl = formRef.current.querySelector('input[name="from_email"]') as HTMLInputElement | null;
+          replyField.value = emailEl?.value || '';
+        }
+      }
+
+      const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "service_qk9qmv6";
+      const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || "template_tapzogh";
+      const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || "aKvvj5-jhk8txeQul";
+
+      if (!serviceId || !templateId || !publicKey) {
+        console.error("EmailJS env vars missing", { serviceId, templateId, publicKey });
+        setStatus('Email service not configured. Please contact us directly.');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        if (typeof emailjs.init === "function") emailjs.init(publicKey);
+      } catch (initErr) {
+        console.warn("EmailJS init warning (contact):", initErr);
+      }
+
+      emailjs
+        .sendForm(serviceId, templateId, formRef.current as HTMLFormElement, publicKey)
+        .then(
+          (res: unknown) => {
+            console.log("EmailJS send result (contact):", res);
+            setStatus('Thanks — message sent. We will reply shortly.');
+            if (formRef.current) formRef.current.reset();
+          },
+          (err: unknown) => {
+            console.error('Email send error:', err);
+            let details = '';
+            try {
+              // @ts-expect-error defensive access on unknown error shape
+              details = err?.text || err?.statusText || JSON.stringify(err);
+            } catch {
+              details = String(err);
+            }
+            setStatus(`Failed to send. (${details})`);
+          }
+        )
+        .finally(() => setLoading(false));
+    } catch (err) {
+      console.error('Email send exception:', err);
+      setStatus('Failed to send. Please try again or email us directly.');
+      setLoading(false);
+    }
   };
 
   return (
@@ -123,67 +172,39 @@ export default function Contact() {
                 <h3 className="text-3xl font-bold text-white">Send Us a Message</h3>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Contact form implemented via EmailJS */}
+              <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   {/* Name Field */}
                   <div className="group">
-                    <label className="block text-white font-semibold mb-3 text-lg">
-                      Your Name
-                    </label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      placeholder="Enter your full name"
-                      className="w-full px-4 py-4 bg-white/10 border border-purple-400/20 rounded-2xl text-white placeholder-white/50 focus:outline-none focus:border-purple-400/40 focus:bg-white/15 transition-all duration-300"
-                      required
-                    />
+                    <label className="block text-white font-semibold mb-3 text-lg">Your Name</label>
+                    <input type="text" name="from_name" placeholder="Enter your full name" className="w-full px-4 py-4 bg-white/10 border border-purple-400/20 rounded-2xl text-white placeholder-white/50 focus:outline-none focus:border-purple-400/40 focus:bg-white/15 transition-all duration-300" required />
                   </div>
 
                   {/* Email Field */}
                   <div className="group">
-                    <label className="block text-white font-semibold mb-3 text-lg">
-                      Email Address
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      placeholder="info@theeentityke.com"
-                      className="w-full px-4 py-4 bg-white/10 border border-blue-400/20 rounded-2xl text-white placeholder-white/50 focus:outline-none focus:border-blue-400/40 focus:bg-white/15 transition-all duration-300"
-                      required
-                    />
+                    <label className="block text-white font-semibold mb-3 text-lg">Email Address</label>
+                    <input type="email" name="from_email" placeholder="info@theeentityke.com" className="w-full px-4 py-4 bg-white/10 border border-blue-400/20 rounded-2xl text-white placeholder-white/50 focus:outline-none focus:border-blue-400/40 focus:bg-white/15 transition-all duration-300" required />
                   </div>
                 </div>
 
                 {/* Message Field */}
                 <div className="group">
-                  <label className="block text-white font-semibold mb-3 text-lg">
-                    Your Vision
-                  </label>
-                  <textarea
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    placeholder="Tell us about your project and vision..."
-                    rows={6}
-                    className="w-full px-4 py-4 bg-white/10 border border-purple-400/20 rounded-2xl text-white placeholder-white/50 focus:outline-none focus:border-purple-400/40 focus:bg-white/15 transition-all duration-300 resize-none"
-                    required
-                  />
+                  <label className="block text-white font-semibold mb-3 text-lg">Your Vision</label>
+                  <textarea name="message" placeholder="Tell us about your project and vision..." rows={6} className="w-full px-4 py-4 bg-white/10 border border-purple-400/20 rounded-2xl text-white placeholder-white/50 focus:outline-none focus:border-purple-400/40 focus:bg-white/15 transition-all duration-300 resize-none" required />
                 </div>
 
+                <input type="hidden" name="reply_to" value="" />
+                <input type="hidden" name="date" value="" />
+
                 {/* Submit Button */}
-                <button
-                  type="submit"
-                  className="w-full bg-purple-400/10 hover:bg-purple-400/20 text-white font-bold py-4 px-8 rounded-2xl hover:scale-105 transition-all duration-300 text-lg group border border-purple-400/30 hover:border-purple-400/50"
-                >
+                <button type="submit" disabled={loading} className={`w-full bg-purple-400/10 hover:bg-purple-400/20 text-white font-bold py-4 px-8 rounded-2xl hover:scale-105 transition-all duration-300 text-lg group border border-purple-400/30 hover:border-purple-400/50 ${loading ? 'opacity-60 cursor-not-allowed' : ''}`}>
                   <div className="flex items-center justify-center gap-3">
                     <span>Launch Your Project</span>
                     <FaPaperPlane className="group-hover:translate-x-1 transition-transform duration-300 text-purple-300" />
                   </div>
                 </button>
+                {status && <div className="text-sm mt-3 text-white/80">{status}</div>}
               </form>
             </div>
           </div>

@@ -1,96 +1,120 @@
 "use client";
-import { useState } from "react";
+
+import React, { useRef, useState } from "react";
 import { FaCalendarAlt } from "react-icons/fa";
+import emailjs from "@emailjs/browser";
 
 export default function BookingForm() {
-  const [form, setForm] = useState({ name: "", email: "", phone: "", business: "" });
+  const formRef = useRef<HTMLFormElement | null>(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
-  const setField = (k: string, v: string) => setForm((s) => ({ ...s, [k]: v }));
+  const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "service_qk9qmv6";
+  const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || "template_tapzogh";
+  const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || "aKvvj5-jhk8txeQul";
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // initialize once (idempotent)
+  if (publicKey && typeof window !== "undefined" && (emailjs as any).init instanceof Function) {
+    try {
+      // Safe to call repeatedly - EmailJS ignores duplicate inits
+      emailjs.init(publicKey);
+    } catch (initErr) {
+      // nonfatal: continue, sendForm will accept publicKey as 4th arg if needed
+      // eslint-disable-next-line no-console
+      console.warn("EmailJS init failed:", initErr);
+    }
+  }
+
+  const sendEmail = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setMessage(null);
 
+    if (!formRef.current) {
+      setMessage("Form unavailable. Reload the page and try again.");
+      setLoading(false);
+      return;
+    }
+
+    // Minimal front-end validation
+    const nameEl = formRef.current.querySelector('input[name="from_name"]') as HTMLInputElement | null;
+    const emailEl = formRef.current.querySelector('input[name="from_email"]') as HTMLInputElement | null;
+    if (!nameEl?.value?.trim() || !emailEl?.value?.trim()) {
+      setMessage("Please provide your full name and email.");
+      setLoading(false);
+      return;
+    }
+
+    // Add runtime fields
+    const dateField = formRef.current.querySelector('input[name="date"]') as HTMLInputElement | null;
+    if (dateField) dateField.value = new Date().toLocaleString();
+
+    const replyField = formRef.current.querySelector('input[name="reply_to"]') as HTMLInputElement | null;
+    if (replyField) replyField.value = emailEl?.value || "";
+
     try {
-      const service_id = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
-      const template_id = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
-      const user_id = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+      // Use sendForm. Since we called init(publicKey) above, we can omit the 4th arg.
+      // But to be safe if init failed, pass publicKey as 4th param.
+      const sendPromise = (emailjs as any).sendForm
+        ? (emailjs as any).sendForm(serviceId, templateId, formRef.current, publicKey)
+        : Promise.reject(new Error("EmailJS client not available"));
 
-      if (!service_id || !template_id || !user_id) {
-        setMessage("Email not configured. Please contact us directly.");
-        setLoading(false);
-        return;
-      }
-
-      const templateParams = {
-        from_name: form.name,
-        from_email: form.email,
-        phone: form.phone,
-        business_type: form.business,
-        message: `Requesting discovery call for ${form.business}`
-      };
-
-      const res = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ service_id, template_id, user_id, template_params: templateParams })
-      });
-
-      if (!res.ok) throw new Error("Email service error");
+      await sendPromise;
 
       setMessage("Thanks — request received. We will email to confirm shortly.");
-      setForm({ name: "", email: "", phone: "", business: "" });
+      formRef.current.reset();
     } catch (err) {
-      console.error(err);
-      setMessage("Failed to send. Please try again or email us directly.");
+      // Log server-side as well (recommended)
+      // eslint-disable-next-line no-console
+      console.error("EmailJS error (booking):", err);
+      setMessage("Failed to send. Please try again or email us directly at info@theeentityke.com.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-3">
+    <form
+      ref={formRef}
+      onSubmit={sendEmail}
+      className="grid gap-3"
+      aria-busy={loading}
+      aria-live="polite"
+    >
       <div className="flex items-center gap-3">
         <FaCalendarAlt className="text-purple-300 w-5 h-5" />
         <div className="text-white/90 font-medium">Choose a time & tell us about your business</div>
       </div>
 
       <input
-        name="name"
-        value={form.name}
-        onChange={(e) => setField("name", e.target.value)}
+        name="from_name"
         placeholder="Full name"
         required
         className="px-3 py-2 rounded-lg bg-black/20 border border-white/10 text-white outline-none focus:ring-2 focus:ring-purple-400"
+        aria-label="Full name"
       />
 
       <input
-        name="email"
+        name="from_email"
         type="email"
-        value={form.email}
-        onChange={(e) => setField("email", e.target.value)}
         placeholder="Email address"
         required
         className="px-3 py-2 rounded-lg bg-black/20 border border-white/10 text-white outline-none focus:ring-2 focus:ring-purple-400"
+        aria-label="Email address"
       />
 
       <input
         name="phone"
-        value={form.phone}
-        onChange={(e) => setField("phone", e.target.value)}
         placeholder="Phone number"
         className="px-3 py-2 rounded-lg bg-black/20 border border-white/10 text-white outline-none focus:ring-2 focus:ring-purple-400"
+        aria-label="Phone number"
       />
 
       <select
-        name="business"
-        value={form.business}
-        onChange={(e) => setField("business", e.target.value)}
+        name="business_type"
         required
         className="px-3 py-2 rounded-lg bg-black/20 border border-white/10 text-white outline-none focus:ring-2 focus:ring-purple-400"
+        aria-label="Business type"
       >
         <option value="">Business type (select)</option>
         <option value="Agriculture">Agriculture</option>
@@ -100,11 +124,15 @@ export default function BookingForm() {
         <option value="Other">Other</option>
       </select>
 
+      <input type="hidden" name="reply_to" value="" />
+      <input type="hidden" name="date" value="" />
+
       <div className="flex items-center justify-between gap-3">
         <button
           type="submit"
           disabled={loading}
-          className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold hover:scale-105 transition-transform"
+          className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold hover:scale-105 transition-transform disabled:opacity-60"
+          aria-disabled={loading}
         >
           {loading ? "Sending..." : "Request Call"}
         </button>
