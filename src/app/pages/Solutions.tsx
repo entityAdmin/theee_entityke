@@ -15,6 +15,19 @@ interface Project {
 
 const projects: Project[] = [
   {
+    id: "quickprinting",
+    title: "QuickPrinting",
+    industry: "ICT / Print-shop services",
+    users: "~50+ cyber/print shops",
+    description:
+      "Digital workflow allowing customers to upload documents via QR/link, with operator dashboard and AI tools.",
+    impact: "Faster turnaround, reduced errors, professional experience",
+    images: [
+      "https://nowqwttrqtklrxgjgxid.supabase.co/storage/v1/object/public/folder/photos/quickprint.png"
+    ],
+    link: "https://www.quickprint.top/"
+  },
+  {
     id: "mavuno-insight",
     title: "Mavuno Insight",
     industry: "Agriculture / Agritech",
@@ -40,18 +53,6 @@ const projects: Project[] = [
             "https://nowqwttrqtklrxgjgxid.supabase.co/storage/v1/object/public/folder/photo/Mavuno%20Marine%20UI.png"
           ],
           link: "https://mavuno-insight-marine.vercel.app/"
-        },
-        {
-          id: "quickprinting",
-          title: "QuickPrinting",
-          industry: "ICT / Print-shop services",
-          users: "~50+ cyber/print shops",
-          description:
-            "Digital workflow allowing customers to upload documents via QR/link, with operator dashboard and AI tools.",
-          impact: "Faster turnaround, reduced errors, professional experience",
-          images: [
-            "https://nowqwttrqtklrxgjgxid.supabase.co/storage/v1/object/public/folder/photo/QuickPrinting%20UI.png"
-          ]
         },
         {
           id: "stockflow",

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 
 interface Props {
   images: string[];
@@ -10,6 +10,15 @@ export default function ProjectCarousel({ images, alt = "Project image" }: Props
   const [index, setIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const touchStartX = useRef<number | null>(null);
+
+  const prev = useCallback(() => {
+    if (images.length === 0) return;
+    setIndex((i) => (i - 1 + images.length) % images.length);
+  }, [images.length]);
+  const next = useCallback(() => {
+    if (images.length === 0) return;
+    setIndex((i) => (i + 1) % images.length);
+  }, [images.length]);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -32,10 +41,7 @@ export default function ProjectCarousel({ images, alt = "Project image" }: Props
       el.removeEventListener("touchstart", handleTouchStart);
       el.removeEventListener("touchend", handleTouchEnd);
     };
-  }, []);
-
-  const prev = () => setIndex((i) => (i - 1 + images.length) % images.length);
-  const next = () => setIndex((i) => (i + 1) % images.length);
+  }, [prev, next]);
 
   return (
     <div ref={containerRef} className="relative w-full">
